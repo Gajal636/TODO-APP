@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // MongoDB connection
-mongoose.connect("mongodb://localhost:27017/todoApp")
+mongoose.connect("mongodb+srv://Gajal636:24bcs192@cluster0.rurfwhi.mongodb.net/todoApp?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.error("MongoDB connection error:", err));
 
