@@ -1,4 +1,4 @@
-```json
+
 {
   "name": "finance-tracker",
   "version": "1.0.0",
@@ -21,4 +21,4 @@
     "@tailwindcss/vite": "^4.1.13"
   }
 }
-```
+
