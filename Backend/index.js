@@ -11,7 +11,7 @@ const port = 3000;
 
 // Middleware
 app.use(cors({
-  origin: "http://localhost:5173", // frontend origin
+  origin: "https://todo-app-my-app.onrender.com", // frontend origin
   credentials: true
 }));
 app.use(express.json());
