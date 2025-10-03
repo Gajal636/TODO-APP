@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// ✅ Backend URL
+const API_URL = "https://todo-app-backend-pi0o.onrender.com";
+
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
@@ -38,15 +41,14 @@ const Login = () => {
   const loginUser = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/login",
+        `${API_URL}/login`, // ✅ Fixed URL
         {
           email: form.email,
           password: form.password,
         },
-        { withCredentials: true }
+        { withCredentials: true } // ✅ Already correct
       );
-
-      // ✅ ensure res.data exists
+      
       if (res.data && res.data.success) {
         setMessage(res.data.message || "Login successful");
         console.log("Redirecting...");
@@ -56,7 +58,7 @@ const Login = () => {
       }
     } catch (err) {
       setMessage(
-        "Login failed: " + (err.response?.data?.error || "Unknown error")
+        "Login failed: " + (err.response?.data?.message || err.message || "Unknown error")
       );
     }
   };
