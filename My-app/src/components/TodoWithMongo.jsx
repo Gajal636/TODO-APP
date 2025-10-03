@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// ✅ Backend URL
+const API_URL = "https://todo-app-backend-pi0o.onrender.com";
+
 const TodoWithMongo = () => {
   const [taskValue, setTaskValue] = useState("");
   const [tasks, setTasks] = useState([]);
@@ -14,7 +17,7 @@ const TodoWithMongo = () => {
 
   const viewTask = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/viewTask", { withCredentials: true });
+      const response = await axios.get(`${API_URL}/viewTask`, { withCredentials: true }); // ✅ Fixed URL
       setTasks(response.data.tasks || []);
     } catch (err) {
       console.error(err);
@@ -26,7 +29,7 @@ const TodoWithMongo = () => {
     if (!taskValue.trim()) return;
     try {
       const response = await axios.post(
-        "http://localhost:3000/addTask",
+        `${API_URL}/addTask`, // ✅ Fixed URL
         { taskValue },
         { withCredentials: true }
       );
@@ -41,7 +44,7 @@ const TodoWithMongo = () => {
 
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/deleteTask/${id}`, { withCredentials: true });
+      await axios.delete(`${API_URL}/deleteTask/${id}`, { withCredentials: true }); // ✅ Fixed URL
       setTasks(tasks.filter((t) => t._id !== id));
     } catch (err) {
       console.error(err);
@@ -50,7 +53,7 @@ const TodoWithMongo = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/logout", {}, { withCredentials: true });
+      await axios.post(`${API_URL}/logout`, {}, { withCredentials: true }); // ✅ Fixed URL
       navigate("/login");
     } catch (err) {
       console.error(err);
