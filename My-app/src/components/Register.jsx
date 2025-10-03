@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// ✅ Backend URL
+const API_URL = "https://todo-app-backend-pi0o.onrender.com";
+
 const Register = () => {
   const [form, setForm] = useState({
     name: "",
@@ -11,7 +14,7 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const navigate = useNavigate(); // ✅ useNavigate for redirect
+  const navigate = useNavigate();
 
   // Handle input changes
   const handleChange = (e) => {
@@ -38,14 +41,14 @@ const Register = () => {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      await registerUser(); // ✅ wait for backend response
+      await registerUser();
     }
   };
 
   // Register user and redirect on success
   const registerUser = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/register", {
+      const response = await axios.post(`${API_URL}/register`, { // ✅ Fixed URL
         name: form.name,
         email: form.email,
         password: form.password,
@@ -53,7 +56,7 @@ const Register = () => {
 
       if (response.data && response.data.success) {
         alert("Registration successful!");
-        navigate("/login"); // ✅ Redirect to login page
+        navigate("/login");
       } else {
         alert("Registration failed!");
       }
