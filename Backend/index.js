@@ -7,12 +7,14 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // ✅ Fixed for Render deployment
 
 // Middleware
 app.use(cors({
   origin: "https://todo-app-my-app.onrender.com", // frontend origin
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -50,6 +52,19 @@ const authenticate = (req, res, next) => {
   }
 };
 
+// Cookie configuration for production
+const cookieOptions = {
+  httpOnly: true,
+  secure: true, // Required for HTTPS
+  sameSite: "none", // Required for cross-origin
+  maxAge: 24 * 60 * 60 * 1000 // 1 day
+};
+
+// Health check endpoint
+app.get("/", (req, res) => {
+  res.json({ message: "Todo App Backend is running! 🚀" });
+});
+
 // Register
 app.post("/register", async (req, res) => {
   try {
@@ -74,7 +89,7 @@ app.post("/login", async (req, res) => {
     if (!match) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign({ _id: user._id, name: user.name }, "secret_key", { expiresIn: "1d" });
-    res.cookie("jwt", token, { httpOnly: true, sameSite: "lax" });
+    res.cookie("jwt", token, cookieOptions);
     res.json({ success: true, user: { _id: user._id, name: user.name } });
   } catch (err) {
     console.error(err);
@@ -84,7 +99,7 @@ app.post("/login", async (req, res) => {
 
 // Logout
 app.post("/logout", (req, res) => {
-  res.clearCookie("jwt", { httpOnly: true, sameSite: "lax" });
+  res.clearCookie("jwt", cookieOptions);
   res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
@@ -125,4 +140,8 @@ app.delete("/deleteTask/:id", authenticate, async (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// Start server
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on port ${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
